@@ -1,0 +1,521 @@
+# Table of Contents
+1. Unit I - Basics of DevOps Infrastructure  
+2. Unit II - Image Building & Container Management  
+
+---
+# UNIT I - Basics of DevOps Infrastructure
+
+---
+
+## 1. Introduction to Containers
+
+A **container** is a lightweight and portable software package that contains:
+
+- Application code  
+- Runtime environment  
+- Libraries  
+- Dependencies  
+- Configuration files  
+
+Containers allow applications to run consistently on any system.
+
+### Advantages of Containers
+
+- Fast startup
+- Lightweight
+- Portable
+- Efficient resource usage
+- Easy deployment
+- Scalable
+
+### Examples
+
+- Docker
+- Podman
+- LXC
+
+---
+
+## 2. Origin of Containers
+
+Containers evolved from Linux process isolation technologies:
+
+### Timeline
+
+- **1979** - `chroot` introduced in Unix  
+- **2000s** - Linux namespaces and cgroups  
+- **2008** - LXC (Linux Containers)  
+- **2013** - Docker launched  
+- **Present** - Kubernetes + Cloud Native containers
+
+---
+
+## 3. Emergence of Modern Containerization
+
+Modern containerization became popular because:
+
+- Need for faster software delivery
+- DevOps culture
+- CI/CD pipelines
+- Microservices architecture
+- Cloud computing
+
+Containers solve the problem:  
+**"It works on my machine but not on production."**
+
+---
+
+## 4. Integration into DevOps
+
+Containers are highly useful in DevOps because they support:
+
+- Continuous Integration (CI)
+- Continuous Deployment (CD)
+- Automated testing
+- Faster rollback
+- Consistent environments
+
+### Example Workflow
+
+Code → Build Container → Test → Deploy → Monitor
+
+---
+
+## 5. Container Runtime
+
+A **container runtime** is software that runs containers.
+
+### Examples
+
+- containerd
+- CRI-O
+- runc
+- Docker Engine
+
+### Responsibilities
+
+- Start containers
+- Stop containers
+- Resource management
+- Isolation
+- Networking
+
+---
+
+## 6. Process Isolation & Namespaces
+
+Linux **Namespaces** isolate processes so containers feel independent.
+
+### Types of Namespaces
+
+| Namespace | Purpose |
+|----------|---------|
+| PID | Separate process IDs |
+| NET | Separate network stack |
+| MNT | Separate file system mounts |
+| IPC | Separate communication |
+| UTS | Separate hostname |
+| USER | Separate users |
+
+ Example
+
+Container process sees itself as PID 1 inside container.
+
+---
+ 7. Control Groups (cgroups)
+
+**cgroups** limit and monitor resources used by containers.
+
+### Controls
+
+- CPU usage
+- Memory usage
+- Disk I/O
+- Network bandwidth
+
+### Example
+
+Limit container memory:
+
+```bash
+docker run -m 512m ubuntu
+
+
+
+8. Container Images & Layers
+
+A container image is a read-only template used to create containers.
+
+Layers Concept
+
+Each Docker instruction creates a layer.
+
+Example:
+
+FROM ubuntu
+RUN apt update
+COPY app.py /app/
+
+This creates multiple layers.
+
+Benefits
+Reuse
+Faster builds
+Efficient storage
+9. Image Registries & Distribution
+
+An image registry stores container images.
+
+Popular Registries
+Docker Hub
+GitHub Container Registry (GHCR)
+Google Container Registry
+Private Registry
+Commands
+
+Pull image:
+
+docker pull nginx
+
+Push image:
+
+docker push username/myapp:v1
+10. Introduction to Docker
+
+Docker is a platform used to build, ship, and run containers.
+
+Why Docker?
+Easy container management
+Fast deployment
+Huge community
+Cross-platform support
+11. Docker Architecture
+
+Docker uses Client-Server Architecture
+
+Components
+Docker Client
+Docker Daemon
+Docker Registry
+Flow
+
+User Command → Docker CLI → Docker Daemon → Container/Image
+
+12. Docker Daemon
+
+The Docker Daemon (dockerd) is background service that manages:
+
+Images
+Containers
+Networks
+Volumes
+13. Docker CLI
+
+CLI = Command Line Interface
+
+Common Commands
+docker version
+docker info
+docker images
+docker ps
+docker run ubuntu
+docker stop container_id
+docker rm container_id
+14. Docker Registry & Hub
+
+Docker Hub is the default public registry.
+
+Use
+docker login
+docker pull mysql
+docker push username/app
+15. Docker Object Types
+Container
+
+Running instance of image.
+
+docker run nginx
+Image
+
+Blueprint of container.
+
+docker images
+Network
+
+Used for communication.
+
+docker network ls
+Volume
+
+Used for persistent storage.
+
+docker volume ls
+16. Docker Layering & Filesystem
+
+Docker uses layered filesystem.
+
+Base Layer
+
+OS layer (Ubuntu, Alpine)
+
+Top Writable Layer
+
+Changes stored when container runs.
+
+Benefit
+
+Multiple containers can share same base image.
+--------------------------------------------------------------------------------------------
+
+
+UNIT II - Image Building & Container Management
+1. Dockerfile Core Concepts
+
+A Dockerfile is a script used to create Docker images.
+
+Example
+FROM openjdk:17
+WORKDIR /app
+COPY . .
+RUN javac Main.java
+CMD ["java","Main"]
+
+Build image:
+
+docker build -t javaapp .
+2. Image Layering
+
+Each instruction creates a new layer.
+
+FROM ubuntu
+RUN apt update
+RUN apt install nginx
+COPY . /app
+
+Each line = layer.
+
+3. Build Context & .dockerignore
+Build Context
+
+Files sent to Docker daemon during build.
+
+docker build .
+.dockerignore
+
+Used to exclude unnecessary files.
+
+Example:
+
+node_modules
+.git
+temp.txt
+4. Dockerfile Instructions
+FROM
+
+Base image.
+
+FROM ubuntu
+RUN
+
+Executes command during build.
+
+RUN apt update
+COPY
+
+Copies local files.
+
+COPY . /app
+ADD
+
+Like COPY + supports URL/tar extraction.
+
+CMD
+
+Default command.
+
+CMD ["python","app.py"]
+ENTRYPOINT
+
+Fixed executable.
+
+WORKDIR
+
+Working directory.
+
+WORKDIR /app
+ENV
+
+Environment variable.
+
+ENV PORT=8080
+EXPOSE
+
+Expose port.
+
+EXPOSE 8080
+VOLUME
+
+Create mount point.
+
+VOLUME /data
+5. Docker Build Process
+
+Command:
+
+docker build -t myapp:v1 .
+Meaning
+build = create image
+-t = tag
+. = current directory
+6. Image Tagging / Versioning
+
+Tags identify versions.
+
+docker tag myapp:v1 myapp:latest
+
+Examples:
+
+v1
+v2
+latest
+prod
+7. Inspecting Images
+View Images
+docker images
+Inspect Metadata
+docker inspect nginx
+View Layers / History
+docker history nginx
+8. Docker Networking
+
+Docker supports networking between containers.
+
+List Networks
+docker network ls
+9. Bridge Network
+
+Default network for standalone containers.
+
+docker run -d nginx
+
+Containers communicate using bridge.
+
+10. Host Network
+
+Container uses host machine network directly.
+
+docker run --network host nginx
+11. Overlay Network
+
+Used in multi-host/container orchestration like swarm.
+
+Used to connect containers across multiple hosts.
+
+12. DNS Inside Docker
+
+Docker provides internal DNS.
+
+Containers can communicate using container names.
+
+Example:
+
+docker run --name db mysql
+docker run app
+
+App can connect using hostname db
+
+13. Linking Containers
+
+Old method:
+
+docker run --link db:mysql app
+
+Now mostly replaced by custom networks.
+
+14. Port Mapping
+
+Map host port to container port.
+
+docker run -p 8080:80 nginx
+
+Meaning:
+
+Host Port = 8080
+Container Port = 80
+
+Access in browser:
+
+localhost:8080
+15. Docker Storage
+
+Containers are temporary. Data may be lost after removal.
+
+Use volumes or bind mounts.
+
+16. Volumes vs Bind Mounts
+Feature	Volume	Bind Mount
+Managed by Docker	Yes	No
+Better Portability	Yes	No
+Direct Host Path	No	Yes
+Volume Example
+docker run -v mydata:/data ubuntu
+Bind Mount Example
+docker run -v /home/user/data:/data ubuntu
+17. Backing Data on Host
+
+Store data permanently on host system using:
+
+Volumes
+Bind mounts
+18. Copy-on-Write Mechanism
+
+Docker saves changes only in writable layer.
+
+Original image layers remain unchanged.
+
+Benefit
+Fast containers
+Less storage
+Efficient cloning
+19. Registries
+Docker Hub
+
+Public image repository.
+
+GHCR
+
+GitHub Container Registry stores images linked with GitHub accounts.
+
+20. Private Registries
+
+Organizations use private registries for internal images.
+
+Examples:
+
+Harbor
+Nexus
+Self-hosted Docker Registry
+21. Authentication & Access Tokens
+
+Used for secure login.
+
+docker login
+
+Use username + password / token.
+
+Important Practical Commands
+docker images
+docker ps
+docker ps -a
+docker run ubuntu
+docker run -it ubuntu bash
+docker stop container_id
+docker rm container_id
+docker rmi image_id
+docker build -t app:v1 .
+docker network ls
+docker volume ls
+docker inspect nginx
+docker history nginx
+docker pull nginx
+docker push username/app:v1
