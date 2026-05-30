@@ -316,3 +316,8 @@ Supports multi-container applications
 Reproducible environments
 Simplified networking
 Better DevOps workflow
+
+
+
+**Summary**
+In this unit, we studied Microservices Architecture, Docker Compose, YAML configuration files, environment variables, secrets, service dependencies, and deployment of multi-container applications such as WordPress + MySQL, Node.js + MongoDB, and Spring Boot + PostgreSQL. Docker Compose plays a crucial role in managing and deploying modern containerized microservices efficiently.
